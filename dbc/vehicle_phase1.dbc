@@ -1,0 +1,39 @@
+VERSION ""
+
+NS_ :
+
+BS_: 500000
+
+BU_: ECU_ENGINE ECU_BODY ECU_CHASSIS ECU_BMS
+
+BO_ 256 VehicleSpeed: 8 ECU_CHASSIS
+ SG_ Speed : 0|16@1+ (0.01,0) [0|300] "km/h" Vector__XXX
+
+BO_ 257 EngineRPM: 8 ECU_ENGINE
+ SG_ RPM : 0|16@1+ (1,0) [0|8000] "rpm" Vector__XXX
+
+BO_ 258 FuelLevel: 8 ECU_BMS
+ SG_ Fuel : 0|8@1+ (0.5,0) [0|100] "%" Vector__XXX
+
+BO_ 259 CoolantTemp: 8 ECU_ENGINE
+ SG_ Temperature : 0|8@1+ (1,-40) [-40|215] "degC" Vector__XXX
+
+BO_ 260 BatteryVoltage: 8 ECU_BMS
+ SG_ Voltage : 0|16@1+ (0.01,0) [0|20] "V" Vector__XXX
+
+BO_ 261 SteeringAngle: 8 ECU_CHASSIS
+ SG_ Angle : 0|16@1- (0.1,0) [-720|720] "deg" Vector__XXX
+
+BO_ 262 BrakeStatus: 8 ECU_CHASSIS
+ SG_ BrakeApplied : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 263 AcceleratorPos: 8 ECU_ENGINE
+ SG_ Position : 0|8@1+ (0.5,0) [0|100] "%" Vector__XXX
+
+BO_ 264 GearPosition: 8 ECU_CHASSIS
+ SG_ Gear : 0|8@1+ (1,0) [0|6] "" Vector__XXX
+
+BO_ 265 DoorStatus: 8 ECU_BODY
+ SG_ Doors : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+
+VAL_ 264 Gear 0 "P" 1 "R" 2 "N" 3 "D" 4 "S" 5 "L" 6 "M" ;
