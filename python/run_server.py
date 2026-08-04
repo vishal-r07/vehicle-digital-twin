@@ -49,14 +49,14 @@ if __name__ == "__main__":
     config.log_level = args.log_level
     
     print(f"""
-    ╔══════════════════════════════════════════════════╗
-    ║   Vehicle Digital Twin - Phase 1 Backend                        ║
-    ║                                                                 ║
-    ║   Serial Port:  {config.serial.port:<32}                        ║ 
-    ║   Baud Rate:    {config.serial.baud_rate:<32}                   ║
-    ║   WebSocket:    ws://0.0.0.0:{config.websocket.port:<19}        ║
-    ║   Log Level:    {config.log_level:<32}                          ║
-    ╚══════════════════════════════════════════════════╝
+    +--------------------------------------------------+
+    |   Vehicle Digital Twin - Phase 1 Backend         |
+    |                                                  |
+    |   Serial Port:  {config.serial.port:<32} |
+    |   Baud Rate:    {config.serial.baud_rate:<32} |
+    |   WebSocket:    ws://0.0.0.0:{config.websocket.port:<19} |
+    |   Log Level:    {config.log_level:<32} |
+    +--------------------------------------------------+
     """)
     
     run()

@@ -12,7 +12,7 @@ import asyncio
 import json
 import websockets
 from websockets.server import WebSocketServerProtocol
-from typing import Set
+from typing import Set, Optional
 from datetime import datetime, timezone
 
 from .config import config
@@ -125,7 +125,3 @@ class WebSocketServer:
         finally:
             self._clients.discard(websocket)
             logger.info(f"Client disconnected: {remote} (total: {len(self._clients)})")
-
-
-# Type hint fix
-from typing import Optional

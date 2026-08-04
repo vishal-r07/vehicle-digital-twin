@@ -1,0 +1,37 @@
+:root {
+  /* Colors - Dark Automotive Theme */
+  --color-primary: #00d4ff;
+  --color-secondary: #ff6b35;
+  --color-warning: #ffa500;
+  --color-danger: #ff3333;
+  --color-success: #00ff88;
+  --color-accent: #6366f1;
+  
+  --color-bg: #0a0e17;
+  --color-surface: #141b2d;
+  --color-surface-light: #1e2a42;
+  --color-border: #2a3a52;
+  
+  --color-text: #e0e6ed;
+  --color-text-dim: #7a8ba0;
+  
+  /* Typography */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  
+  /* Borders */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  
+  /* Shadows */
+  --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.15);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+}

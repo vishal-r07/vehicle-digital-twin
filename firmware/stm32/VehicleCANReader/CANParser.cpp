@@ -50,7 +50,7 @@ void CANParser::decodeFuel(const uint8_t* data, VehicleState& state) {
 void CANParser::decodeTemp(const uint8_t* data, VehicleState& state) {
     // 8-bit unsigned with -40 offset
     uint8_t raw = data[0];
-    state.temp = (int8_t)(raw * TEMP_RESOLUTION + TEMP_OFFSET);
+    state.temp = (int16_t)(raw * TEMP_RESOLUTION + TEMP_OFFSET);
 }
 
 void CANParser::decodeBattery(const uint8_t* data, VehicleState& state) {

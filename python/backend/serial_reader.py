@@ -100,9 +100,7 @@ class SerialReader:
     def start(self):
         """Start background reading thread."""
         if not self._connected:
-            if not self.connect():
-                logger.error("Cannot start reader - no connection")
-                return
+            self.connect()
         
         self._running = True
         self._thread = threading.Thread(target=self._read_loop, daemon=True)

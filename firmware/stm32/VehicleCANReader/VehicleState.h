@@ -20,7 +20,7 @@ struct VehicleState {
     float    speed;         // km/h [0..300]
     uint16_t rpm;           // rpm [0..8000]
     float    fuel;          // % [0..100]
-    int8_t   temp;          // °C [-40..215]
+    int16_t  temp;          // °C [-40..215]
     float    battery;       // V [0..20]
     float    steering;      // deg [-720..720]
     bool     brake;         // true = applied
