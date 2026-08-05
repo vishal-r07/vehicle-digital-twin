@@ -1,0 +1,317 @@
+AutoTwinAI/
+│
+├── README.md
+├── LICENSE
+├── .gitignore
+├── docker-compose.yml                    # Optional containerization
+├── Makefile                              # Build/run shortcuts
+│
+├── docs/
+│   ├── architecture/
+│   │   ├── system_architecture.md
+│   │   ├── data_flow.md
+│   │   ├── can_protocol_spec.md
+│   │   ├── fault_detection_design.md
+│   │   ├── plugin_system.md
+│   │   └── api_specification.md
+│   ├── setup/
+│   │   ├── hardware_wiring.md
+│   │   ├── stm32_flash.md
+│   │   ├── ts_master_config.md
+│   │   ├── backend_setup.md
+│   │   └── frontend_setup.md
+│   ├── user_guide/
+│   │   ├── vehicle_selection.md
+│   │   ├── scenario_engine.md
+│   │   ├── replay_mode.md
+│   │   └── diagnostic_interpretation.md
+│   └── assets/
+│       ├── wiring_diagram.png
+│       ├── architecture_diagram.png
+│       └── screenshots/
+│
+├── firmware/
+│   └── stm32/
+│       ├── AutoTwinCAN/
+│       │   ├── AutoTwinCAN.ino           # Main firmware
+│       │   ├── config.h                  # Pin definitions, baud rates
+│       │   ├── mcp2515_driver.h          # MCP2515 SPI driver
+│       │   ├── mcp2515_driver.cpp
+│       │   ├── can_frame.h               # CAN frame structure
+│       │   ├── serial_protocol.h         # Serial output protocol
+│       │   ├── serial_protocol.cpp
+│       │   └── status_led.h              # Diagnostic LEDs
+│       └── platformio.ini
+│
+├── backend/
+│   ├── pyproject.toml                    # Python project config
+│   ├── requirements.txt
+│   ├── alembic.ini                       # DB migration config
+│   ├── alembic/
+│   │   └── versions/
+│   │
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py                       # FastAPI app entry
+│   │   ├── config.py                     # Settings, env vars
+│   │   ├── dependencies.py               # DI container
+│   │   │
+│   │   ├── core/
+│   │   │   ├── __init__.py
+│   │   │   ├── event_bus.py              # Internal pub/sub
+│   │   │   ├── state_manager.py          # Vehicle state store
+│   │   │   ├── exceptions.py             # Custom exceptions
+│   │   │   └── constants.py              # Enums, magic numbers
+│   │   │
+│   │   ├── hardware/
+│   │   │   ├── __init__.py
+│   │   │   ├── base_interface.py         # Abstract HW interface
+│   │   │   ├── serial_reader.py          # STM32 USB serial
+│   │   │   ├── can_source.py             # Unified CAN source
+│   │   │   ├── simulator.py              # Software CAN simulator
+│   │   │   └── obd2_interface.py         # Future: OBD-II
+│   │   │
+│   │   ├── can/
+│   │   │   ├── __init__.py
+│   │   │   ├── dbc_loader.py             # Parse DBC files
+│   │   │   ├── frame_parser.py           # Decode raw frames
+│   │   │   ├── signal_definitions.py     # Signal metadata
+│   │   │   └── frame_buffer.py           # Ring buffer for frames
+│   │   │
+│   │   ├── vehicle/
+│   │   │   ├── __init__.py
+│   │   │   ├── vehicle_state.py          # State dataclass
+│   │   │   ├── state_updater.py          # Apply CAN to state
+│   │   │   ├── health_calculator.py      # Health score logic
+│   │   │   └── subsystems.py             # Engine, Brakes, etc.
+│   │   │
+│   │   ├── diagnostics/
+│   │   │   ├── __init__.py
+│   │   │   ├── fault_engine.py           # Rule evaluation
+│   │   │   ├── fault_rules.py            # Rule definitions
+│   │   │   ├── fault_timeline.py         # Event logging
+│   │   │   ├── health_score.py           # Score calculation
+│   │   │   └── recommendations.py        # Repair suggestions
+│   │   │
+│   │   ├── scenarios/
+│   │   │   ├── __init__.py
+│   │   │   ├── scenario_engine.py        # Scenario orchestration
+│   │   │   ├── scenario_definitions.py   # Predefined scenarios
+│   │   │   └── replay_engine.py          # Log replay
+│   │   │
+│   │   ├── api/
+│   │   │   ├── __init__.py
+│   │   │   ├── router.py                 # Main API router
+│   │   │   ├── endpoints/
+│   │   │   │   ├── vehicles.py           # Vehicle CRUD
+│   │   │   │   ├── diagnostics.py        # Fault queries
+│   │   │   │   ├── scenarios.py          # Scenario control
+│   │   │   │   ├── replay.py             # Replay control
+│   │   │   │   ├── health.py             # Health scores
+│   │   │   │   ├── system.py             # System status
+│   │   │   │   └── ws.py                 # WebSocket endpoint
+│   │   │   └── schemas/
+│   │   │       ├── vehicle_schemas.py
+│   │   │       ├── diagnostic_schemas.py
+│   │   │       └── ws_messages.py
+│   │   │
+│   │   ├── db/
+│   │   │   ├── __init__.py
+│   │   │   ├── database.py               # SQLAlchemy setup
+│   │   │   ├── models.py                 # ORM models
+│   │   │   └── repositories.py           # Data access layer
+│   │   │
+│   │   └── services/
+│   │       ├── __init__.py
+│   │       ├── vehicle_service.py
+│   │       ├── diagnostic_service.py
+│   │       ├── scenario_service.py
+│   │       └── broadcast_service.py
+│   │
+│   └── tests/
+│       ├── test_can_parser.py
+│       ├── test_state_manager.py
+│       ├── test_fault_engine.py
+│       ├── test_health_calculator.py
+│       ├── test_websocket.py
+│       └── test_scenarios.py
+│
+├── frontend/
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   ├── tsconfig.json                     # TypeScript
+│   ├── index.html
+│   │
+│   ├── public/
+│   │   ├── models/                       # 3D vehicle models (GLB)
+│   │   │   ├── toyota_corolla.glb
+│   │   │   ├── tesla_model3.glb
+│   │   │   └── generic_sedan.glb
+│   │   └── textures/
+│   │
+│   └── src/
+│       ├── main.tsx
+│       ├── App.tsx
+│       ├── vite-env.d.ts
+│       │
+│       ├── config/
+│       │   ├── constants.ts
+│       │   ├── endpoints.ts
+│       │   └── thresholds.ts
+│       │
+│       ├── types/
+│       │   ├── vehicle.types.ts
+│       │   ├── diagnostic.types.ts
+│       │   ├── websocket.types.ts
+│       │   └── scenario.types.ts
+│       │
+│       ├── hooks/
+│       │   ├── useWebSocket.ts
+│       │   ├── useVehicleState.ts
+│       │   ├── useDiagnostics.ts
+│       │   ├── useHealthScore.ts
+│       │   └── useScenario.ts
+│       │
+│       ├── stores/
+│       │   ├── vehicleStore.ts           # Zustand store
+│       │   ├── diagnosticStore.ts
+│       │   ├── uiStore.ts
+│       │   └── connectionStore.ts
+│       │
+│       ├── services/
+│       │   ├── api.ts                    # REST API client
+│       │   ├── websocket.ts              # WS connection manager
+│       │   └── storage.ts                # LocalStorage utils
+│       │
+│       ├── components/
+│       │   ├── layout/
+│       │   │   ├── AppLayout.tsx
+│       │   │   ├── Sidebar.tsx
+│       │   │   ├── Header.tsx
+│       │   │   └── StatusBar.tsx
+│       │   │
+│       │   ├── vehicle-selection/
+│       │   │   ├── VehicleSelector.tsx
+│       │   │   ├── VehicleCard.tsx
+│       │   │   └── VehicleDetails.tsx
+│       │   │
+│       │   ├── dashboard/
+│       │   │   ├── DashboardPanel.tsx
+│       │   │   ├── gauges/
+│       │   │   │   ├── SpeedometerGauge.tsx
+│       │   │   │   ├── RPMGauge.tsx
+│       │   │   │   ├── FuelGauge.tsx
+│       │   │   │   ├── TempGauge.tsx
+│       │   │   │   └── BatteryGauge.tsx
+│       │   │   ├── indicators/
+│       │   │   │   ├── GearIndicator.tsx
+│       │   │   │   ├── WarningLights.tsx
+│       │   │   │   ├── TurnIndicators.tsx
+│       │   │   │   └── DoorStatus.tsx
+│       │   │   └── status/
+│       │   │       ├── ConnectionStatus.tsx
+│       │   │       ├── CANStatus.tsx
+│       │   │       ├── FrameCounter.tsx
+│       │   │       └── FPSCounter.tsx
+│       │   │
+│       │   ├── digital-twin/
+│       │   │   ├── SceneCanvas.tsx
+│       │   │   ├── VehicleModel.tsx
+│       │   │   ├── CameraController.tsx
+│       │   │   ├── subsystems/
+│       │   │   │   ├── EngineBlock.tsx
+│       │   │   │   ├── BrakeSystem.tsx
+│       │   │   │   ├── CoolingSystem.tsx
+│       │   │   │   ├── BatteryUnit.tsx
+│       │   │   │   ├── TransmissionUnit.tsx
+│       │   │   │   ├── SuspensionSystem.tsx
+│       │   │   │   └── ElectricalSystem.tsx
+│       │   │   ├── effects/
+│       │   │   │   ├── BrakeLights.tsx
+│       │   │   │   ├── Headlights.tsx
+│       │   │   │   ├── TurnSignals.tsx
+│       │   │   │   ├── HazardLights.tsx
+│       │   │   │   └── ExhaustParticles.tsx
+│       │   │   └── environment/
+│       │   │       ├── ShowroomFloor.tsx
+│       │   │       ├── Lighting.tsx
+│       │   │       └── CameraPresets.tsx
+│       │   │
+│       │   ├── diagnostics/
+│       │   │   ├── DiagnosticPanel.tsx
+│       │   │   ├── FaultCard.tsx
+│       │   │   ├── FaultTimeline.tsx
+│       │   │   ├── HealthScoreDashboard.tsx
+│       │   │   ├── HealthRadial.tsx
+│       │   │   └── RecommendationCard.tsx
+│       │   │
+│       │   ├── scenarios/
+│       │   │   ├── ScenarioSelector.tsx
+│       │   │   ├── ScenarioCard.tsx
+│       │   │   └── ScenarioControls.tsx
+│       │   │
+│       │   ├── replay/
+│       │   │   ├── ReplayControls.tsx
+│       │   │   ├── Timeline.tsx
+│       │   │   └── PlaybackSpeed.tsx
+│       │   │
+│       │   └── common/
+│       │       ├── GaugeBase.tsx
+│       │       ├── RadialProgress.tsx
+│       │       ├── StatusBadge.tsx
+│       │       ├── LoadingSpinner.tsx
+│       │       └── ErrorBoundary.tsx
+│       │
+│       └── styles/
+│           ├── globals.css
+│           └── tailwind.css
+│
+├── vehicles/                             # Vehicle plugin directory
+│   ├── _registry.json                    # Master vehicle list
+│   │
+│   ├── toyota_corolla_2020/
+│   │   ├── vehicle.json                  # Metadata, profile
+│   │   ├── can_signals.dbc               # DBC file
+│   │   ├── fault_rules.yaml              # Diagnostic rules
+│   │   ├── dashboard_layout.json         # Custom gauge layout
+│   │   ├── 3d_model.glb                  # 3D model
+│   │   └── subsystem_map.json            # Subsystem positions
+│   │
+│   ├── tesla_model3_2023/
+│   │   ├── vehicle.json
+│   │   ├── can_signals.dbc
+│   │   ├── fault_rules.yaml
+│   │   ├── dashboard_layout.json
+│   │   ├── 3d_model.glb
+│   │   └── subsystem_map.json
+│   │
+│   └── generic_obd2/                     # Fallback for any OBD-II
+│       ├── vehicle.json
+│       ├── can_signals.dbc
+│       └── fault_rules.yaml
+│
+├── scenarios/                            # Scenario definitions
+│   ├── normal_driving.json
+│   ├── city_traffic.json
+│   ├── highway_cruise.json
+│   ├── engine_overheat.json
+│   ├── battery_failure.json
+│   ├── abs_activation.json
+│   ├── door_open_driving.json
+│   ├── engine_stall.json
+│   └── fuel_leak.json
+│
+├── dbc/                                  # Shared DBC resources
+│   ├── obd2_standard.dbc
+│   ├── j1939_base.dbc                    # Future
+│   └── README.md
+│
+└── scripts/
+    ├── setup.sh                          # Full environment setup
+    ├── start_backend.sh
+    ├── start_frontend.sh
+    ├── start_all.sh
+    ├── flash_stm32.sh
+    ├── generate_test_can.py              # Generate test CAN logs
+    └── migrate_db.py
