@@ -1,0 +1,61 @@
+TSMaster
+    │
+    │ Generates CAN frames based on DBC + Scenario
+    │
+    ▼
+USB-CAN Adapter (PC side)
+    │
+    │ CAN_H / CAN_L physical bus
+    │
+    ▼
+MCP2515 CAN Controller
+    │
+    │ SPI (MOSI, MISO, SCK, CS, INT)
+    │
+    ▼
+STM32F103RB Nucleo
+    │
+    │ Processes CAN frames
+    │ Decodes using signal definitions
+    │ Packages into structured serial protocol
+    │
+    │ USB Serial (CDC, 115200+ baud)
+    │
+    ▼
+Python Backend (FastAPI)
+    │
+    ├── Serial Reader Thread (async)
+    │       │
+    │       ▼
+    ├── CAN Frame Parser
+    │       │
+    │       ▼
+    ├── Vehicle State Manager (updates state)
+    │       │
+    │       ├──► Fault Detection Engine (rule evaluation)
+    │       │       │
+    │       │       ▼
+    │       │    Fault Timeline Logger
+    │       │
+    │       ├──► Health Score Calculator
+    │       │
+    │       └──► WebSocket Broadcast
+    │               │
+    │               ▼
+    │           All Connected Clients
+    │
+    ├── REST API (vehicle list, config, history)
+    │
+    └── SQLite (events, faults, health history)
+    
+    ▼
+React Frontend
+    │
+    ├── WebSocket Client (receives state updates)
+    │       │
+    │       ├──► Dashboard (gauges, indicators)
+    │       ├──► 3D Digital Twin (Three.js)
+    │       ├──► Diagnostic Panel (faults, health)
+    │       └──► Fault Timeline (event log)
+    │
+    └── REST Client (vehicle selection, config)
