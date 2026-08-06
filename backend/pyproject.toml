@@ -1,0 +1,251 @@
+# ============================================================================
+# AutoTwin AI - Vehicle Digital Twin Platform
+# ============================================================================
+# Python Project Configuration
+# Build System: setuptools + modern PEP 621 metadata
+# ============================================================================
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel>=0.41.0"]
+build-backend = "setuptools.build_meta"
+
+# ============================================================================
+# PROJECT METADATA
+# ============================================================================
+
+[project]
+name = "autotwin-backend"
+version = "1.0.0"
+description = "AutoTwin AI - Real-Time Vehicle Digital Twin & Intelligent Diagnostic Platform Backend"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "AutoTwin AI Development Team", email = "dev@autotwin.ai"},
+]
+maintainers = [
+    {name = "AutoTwin AI Development Team", email = "dev@autotwin.ai"},
+]
+keywords = [
+    "automotive",
+    "digital-twin",
+    "can-bus",
+    "diagnostics",
+    "vehicle",
+    "real-time",
+    "websocket",
+    "stm32",
+    "obd",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Automotive Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
+    "Topic :: Software Development :: Embedded Systems",
+    "Framework :: FastAPI",
+    "Typing :: Typed",
+]
+
+# ============================================================================
+# CORE DEPENDENCIES
+# ============================================================================
+
+dependencies = [
+    # --- Web Framework ---
+    "fastapi>=0.109.0,<1.0.0",
+    "uvicorn[standard]>=0.27.0,<1.0.0",
+    "starlette>=0.35.0",
+
+    # --- WebSocket ---
+    "websockets>=12.0,<13.0",
+
+    # --- Serial Communication (STM32) ---
+    "pyserial>=3.5,<4.0",
+
+    # --- Database ---
+    "sqlalchemy[asyncio]>=2.0.25,<3.0.0",
+    "aiosqlite>=0.19.0,<1.0.0",
+    "alembic>=1.13.0,<2.0.0",
+
+    # --- Data Validation & Serialization ---
+    "pydantic>=2.5.0,<3.0.0",
+    "pydantic-settings>=2.1.0,<3.0.0",
+    "orjson>=3.9.0,<4.0.0",
+
+    # --- CAN Bus / DBC Parsing ---
+    "cantools>=39.4.0,<40.0.0",
+
+    # --- Configuration ---
+    "python-dotenv>=1.0.0,<2.0.0",
+    "pyyaml>=6.0.1,<7.0.0",
+
+    # --- Async Utilities ---
+    "anyio>=4.2.0,<5.0.0",
+
+    # --- Logging ---
+    "loguru>=0.7.2,<1.0.0",
+
+    # --- HTTP Client (for testing / future integrations) ---
+    "httpx>=0.26.0,<1.0.0",
+]
+
+# ============================================================================
+# OPTIONAL DEPENDENCY GROUPS
+# ============================================================================
+
+[project.optional-dependencies]
+
+# Development tools
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+    "pytest-timeout>=2.2.0",
+    "black>=23.12.0",
+    "ruff>=0.1.9",
+    "mypy>=1.8.0",
+    "pre-commit>=3.6.0",
+]
+
+# Production deployment
+prod = [
+    "gunicorn>=21.2.0",
+    "psycopg2-binary>=2.9.9",    # PostgreSQL (Phase 2+)
+    "redis>=5.0.0",               # Caching (Phase 2+)
+    "sentry-sdk>=1.39.0",         # Error tracking
+]
+
+# AI / ML (Phase 3)
+ml = [
+    "scikit-learn>=1.3.0",
+    "numpy>=1.26.0",
+    "pandas>=2.1.0",
+]
+
+# LLM Integration (Phase 3)
+llm = [
+    "openai>=1.7.0",
+    "langchain>=0.1.0",
+]
+
+# Full development environment
+all = [
+    "autotwin-backend[dev,prod,ml,llm]",
+]
+
+# ============================================================================
+# ENTRY POINTS / SCRIPTS
+# ============================================================================
+
+[project.scripts]
+autotwin = "app.main:run"
+autotwin-dev = "app.main:run_dev"
+autotwin-migrate = "alembic.config:main"
+
+# ============================================================================
+# TOOL CONFIGURATIONS
+# ============================================================================
+
+# --- pytest ---
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "serial: marks tests requiring serial hardware",
+    "can: marks tests requiring CAN hardware",
+    "integration: marks integration tests",
+]
+addopts = [
+    "--strict-markers",
+    "--tb=short",
+    "-q",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+# --- mypy (type checking) ---
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+strict_equality = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "serial.*",
+    "cantools.*",
+    "orjson.*",
+    "loguru.*",
+]
+ignore_missing_imports = true
+
+# --- ruff (linter) ---
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+    "TCH",  # flake8-type-checking
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "B008",   # function calls in default args (FastAPI pattern)
+]
+
+[tool.ruff.isort]
+known-first-party = ["app"]
+
+# --- black (formatter) ---
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+include = '\.pyi?$'
+
+# --- coverage ---
+[tool.coverage.run]
+source = ["app"]
+omit = [
+    "*/tests/*",
+    "*/alembic/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+fail_under = 70
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+
+# --- setuptools ---
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+exclude = ["tests*", "alembic*"]
